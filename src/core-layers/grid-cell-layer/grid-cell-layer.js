@@ -29,9 +29,9 @@ import fs from './grid-cell-layer-fragment.glsl';
 const DEFAULT_COLOR = [255, 0, 255, 255];
 
 const defaultProps = {
-  cellSize: 1000,
-  coverage: 1,
-  elevationScale: 1,
+  cellSize: {type: 'number', min: 0, max: 1000, value: 1000},
+  coverage: {type: 'number', min: 0, max: 1, value: 1},
+  elevationScale: {type: 'number', min: 0, value: 1},
   extruded: true,
   fp64: false,
 
@@ -71,7 +71,7 @@ export default class GridCellLayer extends Layer {
   }
 
   initializeState() {
-    const {attributeManager} = this.state;
+    const attributeManager = this.getAttributeManager();
     /* eslint-disable max-len */
     attributeManager.addInstanced({
       instancePositions: {
@@ -93,7 +93,7 @@ export default class GridCellLayer extends Layer {
 
   updateAttribute({props, oldProps, changeFlags}) {
     if (props.fp64 !== oldProps.fp64) {
-      const {attributeManager} = this.state;
+      const attributeManager = this.getAttributeManager();
       attributeManager.invalidateAll();
 
       if (props.fp64 && props.coordinateSystem === COORDINATE_SYSTEM.LNGLAT) {
